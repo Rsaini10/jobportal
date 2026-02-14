@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { jobService } from '../services/api';
-import '../styles/Components.css';
 
 const ApplyModal = ({ job, onClose, onSuccess }) => {
   const [resume, setResume] = useState(null);
@@ -52,46 +51,60 @@ const ApplyModal = ({ job, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>Apply for {job.title}</h2>
-          <button className="close-btn" onClick={onClose}>&times;</button>
-        </div>
-        
-        <div className="modal-body">
-          <div className="job-info">
-            <p><strong>Company:</strong> {job.company}</p>
-            <p><strong>Location:</strong> {job.location}</p>
-            {job.salary && <p><strong>Salary:</strong> ${job.salary.toLocaleString()}/year</p>}
+    <div className="modal show d-block" style={{backgroundColor: 'rgba(0,0,0,0.5)'}} onClick={onClose}>
+      <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Apply for {job.title}</h5>
+            <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="resume">Upload Resume (PDF only)</label>
-              <input
-                type="file"
-                id="resume"
-                accept=".pdf"
-                onChange={handleFileChange}
-                required
-              />
-              {resume && (
-                <p className="file-info">Selected: {resume.name}</p>
-              )}
+          
+          <div className="modal-body">
+            <div className="bg-light p-3 rounded mb-3">
+              <p className="mb-2"><strong>Company:</strong> {job.company}</p>
+              <p className="mb-2"><strong>Location:</strong> {job.location}</p>
+              {job.salary && <p className="mb-0"><strong>Salary:</strong> ${job.salary.toLocaleString()}/year</p>}
             </div>
 
-            <div className="modal-actions">
-              <button type="button" className="btn-secondary" onClick={onClose}>
-                Cancel
-              </button>
-              <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Submitting...' : 'Submit Application'}
-              </button>
-            </div>
-          </form>
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label htmlFor="resume" className="form-label">Upload Resume (PDF only)</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="resume"
+                  accept=".pdf"
+                  onChange={handleFileChange}
+                  required
+                />
+                {resume && (
+                  <div className="form-text text-success">
+                    ✓ Selected: {resume.name}
+                  </div>
+                )}
+              </div>
+
+              <div className="d-flex gap-2">
+                <button type="button" className="btn btn-secondary" onClick={onClose}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary flex-grow-1" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      Submitting...
+                    </>
+                  ) : 'Submit Application'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

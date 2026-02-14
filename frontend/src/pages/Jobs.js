@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import { jobService } from '../services/api';
 import JobCard from '../components/JobCard';
 import ApplyModal from '../components/ApplyModal';
-import '../styles/Jobs.css';
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -48,32 +47,45 @@ const Jobs = () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading jobs...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{minHeight: '400px', marginTop: '70px'}}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="jobs-container">
-      <div className="jobs-header">
-        <h1>Available Jobs</h1>
-        <p>Find your dream job from {jobs.length} available positions</p>
+    <div className="container py-5" style={{marginTop: '70px'}}>
+      <div className="text-center mb-5">
+        <h1 className="display-4 fw-bold">Available Jobs</h1>
+        <p className="lead text-muted">Find your dream job from {jobs.length} available positions</p>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
 
-      <div className="jobs-grid">
-        {jobs.length === 0 ? (
-          <div className="no-jobs">No jobs available at the moment</div>
-        ) : (
-          jobs.map((job) => (
-            <JobCard
-              key={job._id}
-              job={job}
-              onApply={handleApply}
-              showApplyButton={isApplicant}
-            />
-          ))
-        )}
-      </div>
+      {jobs.length === 0 ? (
+        <div className="text-center py-5">
+          <p className="lead text-muted">No jobs available at the moment</p>
+        </div>
+      ) : (
+        <div className="row g-4">
+          {jobs.map((job) => (
+            <div key={job._id} className="col-md-6 col-lg-4">
+              <JobCard
+                job={job}
+                onApply={handleApply}
+                showApplyButton={isApplicant}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {showApplyModal && (
         <ApplyModal
